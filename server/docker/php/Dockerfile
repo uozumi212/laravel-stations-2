@@ -1,4 +1,5 @@
-FROM php:8.1-fpm-bullseye
+# FROM php:8.1-fpm-bullseye
+FROM php:8.2-fpm-bullseye
 
 # For composer
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -36,4 +37,3 @@ COPY my.ini /usr/local/etc/php/conf.d/my.ini
 RUN composer global require "laravel/installer"
 
 WORKDIR /var/www
-

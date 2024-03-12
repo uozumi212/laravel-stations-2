@@ -14,11 +14,14 @@ class MovieFactory extends Factory
     public function definition()
     {
         return [
-            'title' => $this->faker->unique()->word,
+            'id' => $this->faker->unique()->randomNumber(), // ランダムな整数
+            'title' => $this->faker->sentence,
             'image_url' => $this->faker->imageUrl(),
             'published_year' => $this->faker->year,
-            'description' => $this->faker->realText(20),
             'is_showing' => $this->faker->boolean,
+            'description' => $this->faker->paragraph,
+            'created_at' => $this->faker->dateTimeBetween('-1 year', 'now'), // 過去1年間のランダムな作成日時
+            'updated_at' => $this->faker->dateTimeBetween('-1 year', 'now'), // 過去1年間のランダムな更新日時
         ];
     }
 }
