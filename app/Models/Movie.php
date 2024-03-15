@@ -13,6 +13,9 @@ class Movie extends Model
         'title', 'image_url', 'published_year', 'is_showing', 'description'
     ];
 
+    // public function genre() {
+    //     return $this->belongsTo(Genre::class);
+    // }
     public function genres() {
         return $this->belongsToMany(Genre::class);
     }

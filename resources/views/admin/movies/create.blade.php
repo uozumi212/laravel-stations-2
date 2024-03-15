@@ -16,6 +16,18 @@
     </ul>
   </div>
   @endif
+
+  @if ($errorMessage)
+    <div class="alert alert-danger" style="color: red; margin-bottom: 10px;">
+      {{ $errorMessage }}
+    </div>
+  @endif
+
+  @if ($exceptionMessage)
+  <div class="alert alert-danger" style="color: red; margin-bottom: 10px;">
+    {{ $exceptionMessage }}
+  </div>
+@endif
   <form action="{{ route('admin.movies.store')}}" method="POST">
     @csrf
     <label for="title">映画タイトル：</label>
@@ -28,7 +40,7 @@
     <input type="checkbox" name="is_showing" id="is_showing" value="1"><br>
     {{-- <input type="checkbox" name="is_showing" id="is_showing" value="1" @if(old('is_showing', false)) checked @endif><br> --}}
     <label for="genre">ジャンル；</label>
-    <input type="text" name="genre" id="genre" value="ジャンル" class="form-control" required><br>
+    <input type="text" name="genre" id="genre" value="{{ old('genre') }}" class="form-control" required><br>
     {{-- <select name="genre" id="genre">
 
       @foreach($genres as $genre)

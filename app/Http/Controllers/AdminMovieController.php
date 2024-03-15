@@ -17,7 +17,10 @@ class AdminMovieController extends Controller
 
     public function create() {
         $genres = Genre::all();
-        return view('admin.movies.create', compact('genres'));
+        $movies = Movie::all();
+        $errorMessage = session('error');
+        $exceptionMessage = session('exceptionMessage');
+        return view('admin.movies.create', compact('movies','genres', 'errorMessage', 'exceptionMessage'));
     }
 
     public function store(Request $request) {
@@ -65,7 +68,11 @@ class AdminMovieController extends Controller
              return redirect('/admin/movies/create')->with('success', '映画が正常に登録されました');
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect('/admin/movies/create')->with('error', '映画の登録中にエラーが発生しました');
+            // $errorMessage = $e->getMessage();
+            $errorMessage = '映画の登録中にエラーが発生しました。';
+            $exceptionMessage = $e->getMessage(); // 修正した箇所
+            \Log::error('SQLエラー:' . $exceptionMessage); // 修正した箇所
+            return redirect('/admin/movies/create')->with('error', $errorMessage)->with('exceptionMessage', $exceptionMessage); // 修正した箇所
         }
 
     }
