@@ -29,11 +29,11 @@
     <input type="hidden" name="is_showing" value="0">
     <input type="checkbox" name="is_showing" id="is_showing" value="1" @if($movie->is_showing) checked @endif><br>
   <div class="form-group">
-    {{-- @if ($movie->genre) --}}
+
       <label for="genre">ジャンル；</label>
       <input type="hidden" name="genre_id" value="{{ $movie->genre_id ?? ''}}">
-      <input type="text" name="genre" id="genre" class="form-control" value="{{$movie->genre->name ?? ''}}" required><br>
-    {{-- @endif --}}
+      <input type="text" name="genre" id="genre" class="form-control" value="{{ $movie->genre->name ?? ''}}" required><br>
+
   </div>
 
 

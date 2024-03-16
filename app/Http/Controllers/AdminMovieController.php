@@ -12,7 +12,9 @@ class AdminMovieController extends Controller
     //
     public function index() {
          $movies = Movie::all();
+        // $movies = Movie::with('genre')->get();
         return view('admin.movies', compact('movies'));
+
     }
 
     public function create() {
@@ -81,8 +83,18 @@ class AdminMovieController extends Controller
     public function edit(Movie $movie) {
         $movie->genre = Genre::where('id', $movie->genre_id)->first();
         // dd($movie->genre->name);
+
+        // $movies = Movie::all();
         $genres = Genre::all();
+        // $genres = Genre::all()->first();
+        if ($movie->genre_id) {
+            $movie->genre = Genre::findOrFail($movie->genre_id);
+        } else {
+            $movie->genre = new Genre();
+        }
+
         return view('admin.movies.edit', compact('movie', 'genres'));
+
     }
 
     public function update(Request $request, Movie $movie) {
@@ -103,31 +115,65 @@ class AdminMovieController extends Controller
             $is_showing = $request->has('is_showing') && $request->is_showing ? true : false;
             $genreName = $request->input('genre');
             $genre = Genre::firstOrCreate(['name' => $genreName]);
+            $genreId = $genre->id;
+            // $existingGenre = Genre::where('name', $genreName)->first();
+
+            // if ($existingGenre) {
+            //     $genreId = $existingGenre->id;
+            // } else {
+            //     $genreId = $genre->id;
+            // }
+
             $movie->update([
                 'title' => $request->title,
                 'image_url' => $request->image_url,
                 'published_year' => $request->published_year,
                 'is_showing' => $is_showing,
                 'description' => $request->description,
-                'genre_id' => $genre->id,
+                'genre_id' => $genreId,
             ]);
+        //     if ($existingGenre) {
+        //         $movie->update([
+        //             'title' => $request->title,
+        //             'image_url' => $request->image_url,
+        //             'published_year' => $request->published_year,
+        //             'is_showing' => $is_showing,
+        //             'description' => $request->description,
+        //             'genre_id' => $existingGenre->id,
+        //         ]);
+        //     } else {
+        //         $movie->update([
+        //             'title' => $request->title,
+        //             'image_url' => $request->image_url,
+        //             'published_year' => $request->published_year,
+        //             'is_showing' => $is_showing,
+        //             'description' => $request->description,
+        //             'genre_id' => $genre->id,
+        //     ]);
+        // }
 
-            $genreNames = explode(',', $request->input('genres'));
-            $movie->genres()->detach();
-            foreach ($genreNames as $genreName) {
-                $genre = Genre::firstOrCreate(['name' => $genreName]);
-                $movie->genres()->attach($genre->id);
-            }
+
+
+            // $genreNames = explode(',', $request->input('genres'));
+            // $movie->genres()->detach();
+            // foreach ($genreNames as $genreName) {
+            //     $genre = Genre::firstOrCreate(['name' => $genreName]);
+            //     $movie->genres()->attach($genre->id);
+            // }
 
             DB::commit();
+            $movies = Movie::all();
+            $genres = Genre::all();
 
-            return redirect()->route('admin.movies.edit', $movie)->with('success', '映画が正常に更新されました');
+            return redirect()->route('admin.movies.index',compact('movies', 'genres'))->with('success', '映画が正常に更新されました');
         } catch (\Exception $e) {
             DB::rollback();
             $exceptionMessage = $e->getMessage();
             \Log::error('映画の登録中にエラーが発生しました' . $exceptionMessage);
             // return redirect()->route('admin.movies.edit', $movie)->with('error', '映画の更新に失敗しました');
-            return redirect('admin/movies/create')->with('error', $errorMessage)->with('exceptionMesage', $exceptionMessage);
+            // return redirect('admin/movies/create')->with('error', $errorMessage)->with('exceptionMesage', $exceptionMessage);
+            // return redirect()->route('admin.movies.edit', $movie)->with('error', '映画の更新に失敗しました');
+            return response()->json(['error' => '映画の更新中にエラーが発生しました'], 500);
         }
     }
 
