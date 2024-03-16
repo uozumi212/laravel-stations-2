@@ -29,8 +29,11 @@
     <input type="hidden" name="is_showing" value="0">
     <input type="checkbox" name="is_showing" id="is_showing" value="1" @if($movie->is_showing) checked @endif><br>
   <div class="form-group">
-    <label for="genre">ジャンル；</label>
-    <input type="text" name="genre" id="genre" class="form-control" value="{{ $movie->genres->inplode('name', ', ')}}" required><br>
+    {{-- @if ($movie->genre) --}}
+      <label for="genre">ジャンル；</label>
+      <input type="hidden" name="genre_id" value="{{ $movie->genre_id ?? ''}}">
+      <input type="text" name="genre" id="genre" class="form-control" value="{{$movie->genre->name ?? ''}}" required><br>
+    {{-- @endif --}}
   </div>
 
 
@@ -39,7 +42,7 @@
             <option value="{{ old('genre', $movie->genre->name ?? '') }}" @if($movie->genres->contains($genre->id)) selected @endif>{{ $genre->name }}</option>
         @endforeach
     </select><br> --}}
-    <input type="text" name="genre" id="genre" value="{{ old('genre', $movie->genre->name ?? '')}}" required><br>
+    {{-- <input type="text" name="genre" id="genre" value="{{ old('genre', $movie->genre->name ?? '')}}" required><br> --}}
     <label for="description">概要：</label><br>
     <textarea name="description" id="description" cols="30" rows="10">{{ $movie->description }}</textarea><br>
     <button type="submit" class="btn btn-primary">更新</button>

@@ -37,13 +37,15 @@
             @foreach ($movie->genres as $genre)
               {{ $genre->name }}
             @endforeach
+            {{-- {{$movie->genre->name}} --}}
           </td>
 
           <td>{{ $movie->description}}</td>
           <td>{{ $movie->created_at }}</td>
           <td>{{ $movie->updated_at }}</td>
        <td>
-        <a href="{{ route('admin.movies.edit', $movie->id) }}">
+        {{-- <a href="{{ route('admin.movies.edit', $movie->id) }}"> --}}
+          <a href="{{ route('admin.movies.edit', $movie) }}">
           <button>編集</button>
         </a>
         <form action="{{ route('admin.movies.destroy', $movie->id) }}" method="POST">

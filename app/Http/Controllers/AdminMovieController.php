@@ -65,20 +65,21 @@ class AdminMovieController extends Controller
 
             DB::commit();
 
-             return redirect('/admin/movies/create')->with('success', '映画が正常に登録されました');
+             return redirect('/admin/movies')->with('success', '映画が正常に登録されました');
         } catch (\Exception $e) {
             DB::rollback();
             // $errorMessage = $e->getMessage();
             $errorMessage = '映画の登録中にエラーが発生しました。';
             $exceptionMessage = $e->getMessage(); // 修正した箇所
             \Log::error('SQLエラー:' . $exceptionMessage); // 修正した箇所
-            return redirect('/admin/movies/create')->with('error', $errorMessage)->with('exceptionMessage', $exceptionMessage); // 修正した箇所
+            // return redirect('/admin/movies/create')->with('error', $errorMessage)->with('exceptionMessage', $exceptionMessage); // 修正した箇所
+            return response()->json(['error' => '映画の登録中にエラーが発生しました'], 500);
         }
 
     }
 
     public function edit(Movie $movie) {
-        // $movie->genre = Genre::where('id', $movie->genre_id)->first();
+        $movie->genre = Genre::where('id', $movie->genre_id)->first();
         // dd($movie->genre->name);
         $genres = Genre::all();
         return view('admin.movies.edit', compact('movie', 'genres'));
@@ -123,12 +124,24 @@ class AdminMovieController extends Controller
             return redirect()->route('admin.movies.edit', $movie)->with('success', '映画が正常に更新されました');
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('admin.movies.edit', $movie)->with('error', '映画の更新に失敗しました');
+            $exceptionMessage = $e->getMessage();
+            \Log::error('映画の登録中にエラーが発生しました' . $exceptionMessage);
+            // return redirect()->route('admin.movies.edit', $movie)->with('error', '映画の更新に失敗しました');
+            return redirect('admin/movies/create')->with('error', $errorMessage)->with('exceptionMesage', $exceptionMessage);
         }
     }
 
     public function destroy(Movie $movie) {
-        $movie->delete();
-        return redirect()->route('admin.movies.index')->with('success', "映画が削除されました");
+        DB::beginTransaction();
+
+        try {
+            $movie->genres()->detach();
+            $movie->delete();
+            DB::commit();
+            return redirect()->route('admin.movies.index')->with('success', "映画が削除されました");
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->route('admin.movies.index')->with('success', "映画の削除に失敗しました");
+        }
     }
 }
