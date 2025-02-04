@@ -23,21 +23,23 @@
         @foreach ($movies as $movie)
         <tr>
           <td>{{ $movie->id }}</td>
-          <td>{{ $movie->title }}</td>
-          <td><img src="{{ $movie->image_url }}" alt="{{ $movie->title }}"></td>
+          <td><a href="{{ route('admin.movies.show', $movie) }}">{{ $movie->title }}</a></td>
+          <td><a href="{{ route('admin.movies.show', $movie) }}"><img src="{{ $movie->image_url }}" alt="{{ $movie->title }}"></a></td>
           <td>{{ $movie->published_year }}</td>
-          <td>
-            @if ($movie->is_showing)
+          <td>@if ($movie->is_showing)
               上映中
             @else
               上映予定
             @endif
           </td>
           <td>
-            @foreach ($movie->genres as $genre)
+            {{-- @foreach ($movie->genres as $genre)
               {{ $genre->name }}
-            @endforeach
-            {{-- {{$movie->genre->name}} --}}
+            @endforeach --}}
+            {{$movie->genre->name}}
+            {{-- @foreach ($movie->genres ?? [] as $genre)
+              {{ $genre->name }}
+            @endforeach --}}
           </td>
 
           <td>{{ $movie->description}}</td>

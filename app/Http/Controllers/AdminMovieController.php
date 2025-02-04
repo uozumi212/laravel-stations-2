@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Movie;
 use App\Models\Genre;
+use App\Models\Schedule;
 use Illuminate\Support\Facades\DB;
 
 class AdminMovieController extends Controller
@@ -12,9 +13,15 @@ class AdminMovieController extends Controller
     //
     public function index() {
          $movies = Movie::all();
-        // $movies = Movie::with('genre')->get();
-        return view('admin.movies', compact('movies'));
 
+        return view('admin.movies', compact('movies'));
+    }
+
+    public function show(int $id)
+    {
+        $movie = Movie::find($id);
+        $schedules = $movie->schedules()->get();
+        return view('admin.movies.show', compact('movie', 'schedules'));
     }
 
     public function create() {
@@ -40,9 +47,10 @@ class AdminMovieController extends Controller
         // $genreName = $request->input('genre');
 
 
-        DB::beginTransaction();
 
         try {
+
+             DB::beginTransaction();
             $is_showing = $request->has('is_showing') && $request->is_showing ? true : false;
             $genreName = $request->input('genre');
             $genre = Genre::firstOrCreate(['name' => $genreName]);
@@ -55,13 +63,8 @@ class AdminMovieController extends Controller
                 'genre_id' => $genre->id,
             ]);
 
-            // $genreNames = explode(',', $request->input('genres'));
-            // foreach ($genreNames as $genreName) {
-            //     $genre = Genre::firstOrCreate(['name' => $genreName]);
-            //     $movie->genres()->attach($genre->id);
-            // }
 
-            $movie->genres()->attach($genre->id);
+            // $movie->genres()->attach($genre->id);
 
             // $movie->genres()->attach($request->genre);
 
@@ -109,19 +112,17 @@ class AdminMovieController extends Controller
             'genre' => 'required|string',
         ]);
 
-        DB::beginTransaction();
+
 
         try {
+            DB::beginTransaction();
             $is_showing = $request->has('is_showing') && $request->is_showing ? true : false;
             $genreName = $request->input('genre');
             $genre = Genre::firstOrCreate(['name' => $genreName]);
             $genreId = $genre->id;
-            // $existingGenre = Genre::where('name', $genreName)->first();
 
-            // if ($existingGenre) {
-            //     $genreId = $existingGenre->id;
-            // } else {
-            //     $genreId = $genre->id;
+            // if($movie->genre !== null) {
+            //     $reposense->assertSee($movie->genre->name);
             // }
 
             $movie->update([
@@ -130,36 +131,10 @@ class AdminMovieController extends Controller
                 'published_year' => $request->published_year,
                 'is_showing' => $is_showing,
                 'description' => $request->description,
-                'genre_id' => $genreId,
+                'genre_id' => $genre->id,
             ]);
-        //     if ($existingGenre) {
-        //         $movie->update([
-        //             'title' => $request->title,
-        //             'image_url' => $request->image_url,
-        //             'published_year' => $request->published_year,
-        //             'is_showing' => $is_showing,
-        //             'description' => $request->description,
-        //             'genre_id' => $existingGenre->id,
-        //         ]);
-        //     } else {
-        //         $movie->update([
-        //             'title' => $request->title,
-        //             'image_url' => $request->image_url,
-        //             'published_year' => $request->published_year,
-        //             'is_showing' => $is_showing,
-        //             'description' => $request->description,
-        //             'genre_id' => $genre->id,
-        //     ]);
-        // }
 
 
-
-            // $genreNames = explode(',', $request->input('genres'));
-            // $movie->genres()->detach();
-            // foreach ($genreNames as $genreName) {
-            //     $genre = Genre::firstOrCreate(['name' => $genreName]);
-            //     $movie->genres()->attach($genre->id);
-            // }
 
             DB::commit();
             $movies = Movie::all();
@@ -187,7 +162,8 @@ class AdminMovieController extends Controller
             return redirect()->route('admin.movies.index')->with('success', "映画が削除されました");
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('admin.movies.index')->with('success', "映画の削除に失敗しました");
+            \Log::error('映画の削除中にエラーが発生しました:', ['message' => $e->getMessage()]);
+            return redirect()->route('admin.movies.index')->with('error', "映画の削除に失敗しました");
         }
     }
 }

@@ -2,11 +2,12 @@
 
 namespace Database\Factories;
 
+use App\Models\Genre;
+// use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class SheetFactory extends Factory
+class GenreFactory extends Factory
 {
-      protected $model = Sheet::class;
     /**
      * Define the model's default state.
      *
@@ -15,8 +16,7 @@ class SheetFactory extends Factory
     public function definition()
     {
         return [
-            //
-
+            'name' => hash('sha256', $this->faker->realText(10)),
         ];
     }
 }

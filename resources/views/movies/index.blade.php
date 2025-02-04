@@ -44,9 +44,9 @@
     </tr>
     @foreach ($movies as $movie)
     <tr>
-        <td>{{ $movie->id }}</td>
-        <td>{{ $movie->title }}</td>
-        <td><img src="{{ $movie->image_url }}" alt="{{ $movie->title }}"></td>
+        <td><a href="{{ route('movies.show', ['id' => $movie->id]) }}">{{ $movie->id }}</a></td>
+        <td><a href="{{ route('movies.show', ['id' => $movie->id]) }}">{{ $movie->title }}</a></td>
+        <td><a href="{{ route('movies.show', ['id' => $movie->id]) }}"><img src="{{ $movie->image_url }}" alt="{{ $movie->title }}"></a></td>
         {{-- <td>{{ $movie->image_url }}</td> --}}
         <td>{{ $movie->published_year }}</td>
         <td>{{ $movie->is_showing ? '上映中' : '上映予定' }}</td>
@@ -55,7 +55,7 @@
             {{ $genre->name }}
           @endforeach
         </td>
-        <td>{{ $movie->description }}</td>
+        <td><a href="{{ route('movies.show', ['id' => $movie->id]) }}">{{ $movie->description }}</a></td>
         <td>{{ $movie->created_at }}</td>
         <td>{{ $movie->updated_at }}</td>
     </tr>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Movie;
+use App\Models\Schedule;
 // use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class MovieController extends Controller
@@ -11,10 +12,6 @@ class MovieController extends Controller
     // use HasFactory;
 
     public function index(Request $request) {
-        // $movies = Movie::all();
-         // クエリパラメータの取得
-    // $isShowing = $request->query('is_showing');
-    // $keyword = $request->query('keyword');
 
     // データベースから映画リストを取得
     $query = Movie::query();
@@ -33,11 +30,6 @@ class MovieController extends Controller
         }
     }
 
-    // 公開中/公開予定の絞り込み
-    // if ($isShowing !== null) {
-    //     $query->where('is_showing', $isShowing);
-    // }
-
     // キーワードによる絞り込み
     if ($request->has('keyword')) {
         $keyword = $request->input('keyword');
@@ -51,6 +43,11 @@ class MovieController extends Controller
     $movies = $query->paginate(20);
 
     return view('movies.index', compact('movies'));
-        // return view('movies', compact('movies'));
+    }
+
+    public function show(int $id) {
+        $movie = Movie::find($id);
+        $schedules = Schedule::where('movie_id', $id)->orderBy('start_time', 'asc')->get();
+        return view('movies.show', compact('movie', 'schedules'));
     }
 }
