@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Movie;
+use App\Models\Screen;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -17,6 +18,7 @@ class ScheduleFactory extends Factory
     {
         return [
             'movie_id' => Movie::factory(),
+            'screen_id' => rand(1,3),
             'start_time' => CarbonImmutable::now(),
             'end_time' => CarbonImmutable::now()->addHours(2),
         ];

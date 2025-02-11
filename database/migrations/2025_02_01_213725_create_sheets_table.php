@@ -15,7 +15,9 @@ class CreateSheetsTable extends Migration
     {
         //
         Schema::create('sheets', function (Blueprint $table) {
-            $table->unsignedBigInteger('id')->id();
+            $table->id();
+            $table->unsignedBigInteger('screen_id');
+            $table->foreign('screen_id')->references('id')->on('screens')->onDelete('cascade');
             $table->integer('column');
             $table->string('row', 255);
         });

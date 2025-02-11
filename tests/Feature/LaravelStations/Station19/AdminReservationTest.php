@@ -103,6 +103,7 @@ class AdminReservationTest extends TestCase
             'sheet_id' => Sheet::first()->id,
             'name' => 'サンプル太郎',
             'email' => 'sample@techbowl.com',
+            'date' => now()->format('Y-m-d'),
         ]);
         $response->assertStatus(302);
         $this->assertReservationCount(1);
@@ -161,6 +162,7 @@ class AdminReservationTest extends TestCase
             'sheet_id' => 2,
             'name' => 'サン太郎',
             'email' => 'sample@techbowl.com',
+            'date' => now()->format('Y-m-d'), // 追加
         ]);
         $response->assertStatus(302);
         $updated = Reservation::find($reservationId);

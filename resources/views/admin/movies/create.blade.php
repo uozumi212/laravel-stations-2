@@ -41,13 +41,6 @@
     {{-- <input type="checkbox" name="is_showing" id="is_showing" value="1" @if(old('is_showing', false)) checked @endif><br> --}}
     <label for="genre">ジャンル；</label>
     <input type="text" name="genre" id="genre" value="{{ old('genre') }}" class="form-control" required><br>
-    {{-- <select name="genre" id="genre">
-
-      @foreach($genres as $genre)
-        <option value="{{ $genre->id }}">{{ $genre->name }}</option>
-      @endforeach
-
-    </select><br> --}}
 
     <label for="description">概要：</label><br>
     <textarea name="description" id="description" value="tttt" cols="30" rows="10"></textarea><br>

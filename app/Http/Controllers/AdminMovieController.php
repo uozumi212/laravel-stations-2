@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Movie;
 use App\Models\Genre;
 use App\Models\Schedule;
+use App\Models\Screen;
 use Illuminate\Support\Facades\DB;
 
 class AdminMovieController extends Controller
@@ -21,7 +22,10 @@ class AdminMovieController extends Controller
     {
         $movie = Movie::find($id);
         $schedules = $movie->schedules()->get();
-        return view('admin.movies.show', compact('movie', 'schedules'));
+        $screens = $schedules->map(function ($schedule) {
+            return $schedule->screen;
+        });
+        return view('admin.movies.show', compact('movie', 'schedules', 'screens'));
     }
 
     public function create() {

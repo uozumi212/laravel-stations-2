@@ -14,13 +14,13 @@ class CreateSchedulesTable extends Migration
     public function up()
     {
         Schema::create('schedules', function (Blueprint $table) {
-            $table->id()->comments('スケジュールID');
-            $table->unsignedBigInteger('movie_id')->comments('列');
+            $table->id()->comment('スケジュールID');
+            $table->unsignedBigInteger('movie_id')->comment('列');
             $table->foreign('movie_id')->references('id')->on('movies')->onDelete('cascade');
-            // $table->unsignedBigInteger('sheet_id');
-            // $table->foreign('sheet_id')->references('id')->on('sheets')->onDelete('cascade');
-            $table->datetime('start_time')->comments('上映開始時間');
-            $table->datetime('end_time')->comments('上映終了時間');
+            $table->unsignedBigInteger('screen_id')->comment('スクリーンID');  // ★ nullable() を削除
+            $table->foreign('screen_id')->references('id')->on('screens')->onDelete('cascade');
+            $table->datetime('start_time')->comment('上映開始時間');
+            $table->datetime('end_time')->comment('上映終了時間');
             $table->timestamps();
         });
     }
